@@ -6,6 +6,9 @@ In addition, you can control the System Volume: Vol+, Vol-.
 + Copy/Paste texts directly to the mobile Clipboard. 
 + APK File could be downloaded from `/bin` folder.
 
+>**Install APK, Run Application, Start Server, Access Web Interface**
+
+
 ![Control Panel Web Interface](https://raw.githubusercontent.com/EslaMx7/Android-HTTPRemoteControl/master/WebInterface.png)
 
 - Using [NanoHttpd](https://github.com/NanoHttpd/nanohttpd) as Web Server.
