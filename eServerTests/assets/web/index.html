@@ -1,0 +1,199 @@
+﻿<html>
+<head>
+	<title>eServer Control Panel</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+	<style type="text/css">
+	.btn{
+		margin: 5px;
+	}
+	</style>
+</head>
+<body>
+	<!-- Wrap all page content here -->
+	<div id="wrap">
+
+		<!-- Fixed navbar -->
+		<div class="navbar navbar-default">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">eServer</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#about">About</a></li>
+						<li><a href="#contact">Contact</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</div>
+
+		<!-- Begin page content -->
+		<div class="container">
+			
+
+			<div class="row">
+				<div class="col-md-4 col-sm-12 col-xs-12">
+					<div class="page-header">
+						<h2>Music Player</h2>
+					</div>
+
+					<button onclick="MusicPlayer('play')" class="btn btn-lg btn-primary">Play</button>
+                    <button onclick="MusicPlayer('pause')" class="btn btn-lg btn-default">Pause</button>
+                    <button onclick="MusicPlayer('stop')" class="btn btn-lg btn-danger">Stop</button>
+                    <button onclick="MusicPlayer('previous')" class="btn btn-lg btn-warning">Previous</button>
+					<button onclick="MusicPlayer('next')" class="btn btn-lg btn-info">Next</button>
+					<br>
+					<button onclick="MusicPlayer('volup')" class="btn btn-lg btn-success">Volume Up</button>
+					<button onclick="MusicPlayer('voldown')" class="btn btn-lg btn-warning">Volume Down</button>
+					<hr>
+				</div>
+
+
+				<div class="col-md-4 col-sm-12 col-xs-12">
+
+				<div class="page-header">
+					<h2>Camera</h2>
+				</div>
+
+					<img id="imgCamera" class="img-responsive" src="" style="width:100%"/>
+					<br>
+					<button onclick="StartPreview()" class="btn btn-lg btn-primary">Preview</button>
+					<hr>
+				</div>
+
+
+				
+				<div class="col-md-4 col-sm-12 col-xs-12">
+				<div class="page-header">
+					<h2>Clipboard</h2>
+				</div>
+					<input type="text" id="txtClipboard" class="form-control"  />
+					<br>
+					<button onclick="GetClipboard()" class="btn btn-lg btn-success">Get</button>
+					<button onclick="SetClipboard()" class="btn btn-lg btn-primary">Set</button>
+					<hr>
+				</div>
+
+
+			</div>
+			
+
+
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<hr>
+
+	<div id="footer">
+		<div class="container">
+			<p class="text-muted credit"> &copy; Eslam Hamouda 2014 | <a href="http://twitter.com/EslaMx7">@EslaMx7</a>.</p>
+		</div>
+	</div>
+
+
+	<script src="bootstrap/js/jquery.js"></script>
+	<script src="bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript">
+
+		var cmd = {
+			sender: "Web Application Client v1",
+			command: {
+				type: "",
+				text:""
+			}
+
+		};
+
+		function MusicPlayer(btn) {
+			cmd.command.type="System.MusicPlayer";
+			cmd.command.text = btn;
+			$.ajax({
+			    type: "POST",
+			    url: "/api/musicplayer",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) { /* alert(data); */ },
+			    failure: function (errMsg) {
+			        alert(errMsg);
+			    }
+			});
+		}
+		
+		function SetClipboard() {
+			cmd.command.type="System.SetClipboard";
+			cmd.command.text = $('#txtClipboard').val();
+			$.ajax({
+			    type: "POST",
+			    url: "/api/clipboard",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) { /* alert(data); */ },
+			    failure: function (errMsg) {
+			        alert(errMsg);
+			    }
+			});
+		}
+
+		function GetClipboard() {
+			cmd.command.type="System.GetClipboard";
+			cmd.command.text = "";
+			$.ajax({
+			    type: "POST",
+			    url: "/api/clipboard",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) { $('#txtClipboard').val(data); },
+			    failure: function (errMsg) {
+			        alert(errMsg);
+			    }
+			});
+		}
+
+
+		function StartPreview(){
+
+			 var refreshInterval = 500;
+
+	        var timer = setInterval(function () {
+	            
+	            $.ajax({
+			    type: "POST",
+			    url: "/api/preview",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) { $('#imgCamera').attr('src',data); },
+			    failure: function (errMsg) {
+			        clearInterval(timer);
+			    },
+			    error: function(x,e){
+			    	 clearInterval(timer);
+			    }
+			});
+
+	        }, refreshInterval);
+
+
+			
+
+
+		}
+
+
+
+	</script>
+</body>
+</html>
